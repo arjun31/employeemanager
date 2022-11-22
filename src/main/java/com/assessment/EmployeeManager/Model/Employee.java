@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity(name = "employee")
@@ -20,7 +21,10 @@ public class Employee {
     private String departmentname;
     private Date dbupdatedate;
 
-    public Employee(){
+    public Employee() {
+    }
+
+    public Employee(int i, String pavan, int i1, String s, LocalDate parse){
 
     }
 

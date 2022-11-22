@@ -1,69 +1,60 @@
 package com.assessment.EmployeeManager;
 
+
 import com.assessment.EmployeeManager.Model.Employee;
 import com.assessment.EmployeeManager.Repository.EmployeeRepository;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
+import com.assessment.EmployeeManager.Service.EmployeeService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(MockitoExtension.class)
 class EmployeeManagerApplicationTests {
 
 	@Autowired
-	EmployeeRepository employeeRepository;
+	private EmployeeService employeeService;
+
+	@MockBean
+	private EmployeeRepository employeeRepository;
 
 	@Test
-	@Order(1)
-	public void testCreate() throws ParseException {
-		Employee e = new Employee();
-		String p = "yyyy-mm-dd";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(p);
-		Date d = simpleDateFormat.parse("2021-06-15");
-		e.setEmployeeid(8);
-		e.setEmployeename("Asha");
-		e.setSalary(40000);
-		e.setDepartmentname("ANZ-Institutional");
-		e.setDbupdatedate(d);
-		employeeRepository.save(e);
-		assertNotNull(employeeRepository.findById(8).get());
+	public void testCreate(){
+		Employee e = new Employee(15,"Vishal",50000,"Security",LocalDate.parse("2021-05-02"));
+		when(employeeRepository.save(e)).thenReturn(e);
+		assertEquals(e,employeeService.createEmployee(e));
 	}
+
 	@Test
-	@Order(2)
 	public void testGetAll(){
-		List<Employee> list = employeeRepository.findAll();
-		assertThat(list).size().isGreaterThan(0);
-	}
-	@Test
-	@Order(3)
-	public void testGetOne(){
-		Employee e = employeeRepository.findById(8).get();
-		assertEquals(40000,e.getSalary());
-	}
-	@Test
-	@Order(4)
-	public void testUpdate(){
-		Employee e = employeeRepository.findById(8).get();
-		e.setSalary(55000);
-		employeeRepository.save(e);
-		assertNotEquals(60000,employeeRepository.findById(8).get().getSalary());
-	}
-	@Test
-	@Order(5)
-	public void testDelete(){
-		employeeRepository.deleteById(8);
-		assertThat(employeeRepository.existsById(8)).isFalse();
+		when(employeeRepository.findAll()).thenReturn(Stream.of(new Employee(13,"Pavan",45000,"ANZ-ARC", LocalDate.parse("2021-08-15")),new Employee(14,"Mansi",50000,"ANZ-ARC", LocalDate.parse("2021-06-12"))).collect(Collectors.toList()));
+		assertEquals(2,employeeService.getAllEmployee().size());
 	}
 
+	@Test
+	public void testUpdate(){
+		Integer id = 13;
+		Employee e = new Employee(16,"Arya",35000,"Development",LocalDate.parse("2020-07-23"));
+		when(employeeRepository.save(e)).thenReturn(e);
+		assertEquals(e,employeeService.updateEmployee(id,e));
+	}
+	@Test
+	public void testDelete(){
+		Integer id = 14;
+		employeeService.deleteEmployee(14);
+		verify(employeeRepository,times(1)).deleteById(14);
+	}
 }

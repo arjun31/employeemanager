@@ -1,7 +1,8 @@
 package com.assessment.EmployeeManager.Controller;
 
 import com.assessment.EmployeeManager.Model.Employee;
-import com.assessment.EmployeeManager.Repository.EmployeeRepository;
+import com.assessment.EmployeeManager.Service.EmployeeService;
+import com.assessment.EmployeeManager.Service.EmployeeServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,35 +12,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/employee")
 public class EmployeeController {
-    @Autowired
-    private EmployeeRepository employeeRepository;
+
+    @Autowired(required = true)
+    private EmployeeServiceImpl employeeServiceImpl;
+
+    @Autowired(required = true)
+    private EmployeeService employeeService;
 
     @GetMapping
     public List<Employee> list(){
-        return employeeRepository.findAll();
+        return employeeServiceImpl.getAllEmployee();
     }
 
     @GetMapping
     @RequestMapping("{id}")
     public Employee get(@PathVariable Integer id){
-        return employeeRepository.getReferenceById(id);
+        return employeeServiceImpl.getEmployee(id);
     }
 
     @PostMapping
     public Employee create(@RequestBody final Employee employee){
-        return employeeRepository.saveAndFlush(employee);
+        return employeeServiceImpl.createEmployee(employee);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Integer id){
-        employeeRepository.deleteById(id);
+        employeeServiceImpl.deleteEmployee(id);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Employee update(@PathVariable Integer id,@RequestBody Employee employee){
-        Employee existingEmployee = employeeRepository.getReferenceById(id);
-        BeanUtils.copyProperties(employee,existingEmployee,"employeeId");
-        return employeeRepository.saveAndFlush(existingEmployee);
+        Employee existingEmployee = employeeServiceImpl.getEmployee(id);
+        BeanUtils.copyProperties(employee,existingEmployee,"employeeid");
+        return employeeServiceImpl.updateEmployee(id,existingEmployee);
     }
 
 }
