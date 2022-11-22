@@ -45,6 +45,13 @@ class EmployeeManagerApplicationTests {
 	}
 
 	@Test
+	public void testGetOne(){
+		Integer id = 14;
+		employeeService.getEmployee(id);
+		verify(employeeRepository,times(1)).getReferenceById(id);
+	}
+
+	@Test
 	public void testUpdate(){
 		Integer id = 13;
 		Employee e = new Employee(16,"Arya",35000,"Development",LocalDate.parse("2020-07-23"));
@@ -54,7 +61,7 @@ class EmployeeManagerApplicationTests {
 	@Test
 	public void testDelete(){
 		Integer id = 14;
-		employeeService.deleteEmployee(14);
-		verify(employeeRepository,times(1)).deleteById(14);
+		employeeService.deleteEmployee(id);
+		verify(employeeRepository,times(1)).deleteById(id);
 	}
 }
