@@ -25,22 +25,23 @@ public class EmployeeController {
     }
 
     @GetMapping
-    @RequestMapping("{id}")
+    @RequestMapping("/get-id-no:{id}")
     public Employee get(@PathVariable Integer id){
         return employeeServiceImpl.getEmployee(id);
     }
 
     @PostMapping
+    @RequestMapping("/create")
     public Employee create(@RequestBody final Employee employee){
         return employeeServiceImpl.createEmployee(employee);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete-id-no:{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Integer id){
         employeeServiceImpl.deleteEmployee(id);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update-id-no:{id}", method = RequestMethod.PUT)
     public Employee update(@PathVariable Integer id,@RequestBody Employee employee){
         Employee existingEmployee = employeeServiceImpl.getEmployee(id);
         BeanUtils.copyProperties(employee,existingEmployee,"employeeid");
