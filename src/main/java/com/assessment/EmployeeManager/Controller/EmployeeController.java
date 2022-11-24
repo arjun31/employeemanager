@@ -26,7 +26,7 @@ public class EmployeeController {
 
     @GetMapping
     @RequestMapping("/get-id-no:{id}")
-    public Employee get(@PathVariable Integer id){
+    public Employee get(@PathVariable Integer id) throws Throwable{
         return employeeServiceImpl.getEmployee(id);
     }
 
@@ -37,12 +37,12 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/delete-id-no:{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Integer id) throws Throwable{
         employeeServiceImpl.deleteEmployee(id);
     }
 
     @RequestMapping(value = "/update-id-no:{id}", method = RequestMethod.PUT)
-    public Employee update(@PathVariable Integer id,@RequestBody Employee employee){
+    public Employee update(@PathVariable Integer id,@RequestBody Employee employee) throws Throwable{
         Employee existingEmployee = employeeServiceImpl.getEmployee(id);
         BeanUtils.copyProperties(employee,existingEmployee,"employeeid");
         return employeeServiceImpl.updateEmployee(id,existingEmployee);

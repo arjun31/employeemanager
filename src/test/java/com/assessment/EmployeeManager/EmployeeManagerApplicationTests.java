@@ -1,6 +1,7 @@
 package com.assessment.EmployeeManager;
 
 
+import com.assessment.EmployeeManager.Exception.DataNotFound;
 import com.assessment.EmployeeManager.Model.Employee;
 import com.assessment.EmployeeManager.Repository.EmployeeRepository;
 import com.assessment.EmployeeManager.Service.EmployeeService;
@@ -45,21 +46,21 @@ class EmployeeManagerApplicationTests {
 	}
 
 	@Test
-	public void testGetOne(){
+	public void testGetOne() throws Throwable {
 		Integer id = 14;
 		employeeService.getEmployee(id);
 		verify(employeeRepository,times(1)).getReferenceById(id);
 	}
 
 	@Test
-	public void testUpdate(){
+	public void testUpdate() throws Throwable{
 		Integer id = 13;
 		Employee e = new Employee(16,"Arya",35000,"Development",LocalDate.parse("2020-07-23"));
 		when(employeeRepository.save(e)).thenReturn(e);
 		assertEquals(e,employeeService.updateEmployee(id,e));
 	}
 	@Test
-	public void testDelete(){
+	public void testDelete() throws Throwable{
 		Integer id = 14;
 		employeeService.deleteEmployee(id);
 		verify(employeeRepository,times(1)).deleteById(id);
